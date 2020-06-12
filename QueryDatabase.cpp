@@ -28,7 +28,7 @@ void QueryDatabase::AddUser(const char * username, const char * password, int st
 
 		prep_stmt->setString(1, username);
 		prep_stmt->setString(2, password);
-		prep_stmt->setInt(3, 1);
+		prep_stmt->setInt(3, status);
 		prep_stmt->execute();
 
 		delete prep_stmt;
