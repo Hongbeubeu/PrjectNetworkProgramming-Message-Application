@@ -6,6 +6,10 @@
 #include <cppconn/prepared_statement.h>
 
 using namespace sql;
+
+/**
+ * Query to database
+ */
 class QueryDatabase {
 public:
 	void AddUser(const char *, const char *,int);

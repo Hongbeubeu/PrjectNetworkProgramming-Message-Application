@@ -8,8 +8,14 @@ QueryDatabase::QueryDatabase() {
 QueryDatabase::~QueryDatabase() {
 
 };
-
-
+/**
+ * AddUser is used to add user into database
+ * 
+ * @param username contain user name string of account
+ * @param password contain password string of account 
+ * @param status contain status of account
+ * @return no return value
+ */
 void QueryDatabase::AddUser(const char * username, const char * password, int status) {
 	try {
 		Driver *driver;
