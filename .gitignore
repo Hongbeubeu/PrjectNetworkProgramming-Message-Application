@@ -9,3 +9,7 @@
 /ProjectNetworkProgramming/Server/stdafx.cpp
 /ProjectNetworkProgramming/Server/targetver.h
 /ProjectNetworkProgramming/.vs
+/ProjectNetworkProgramming/Debug/*
+/ProjectNetworkProgramming/Server/Debug/*
+/ProjectNetworkProgramming/Debug
+/ProjectNetworkProgramming/Server/Debug
