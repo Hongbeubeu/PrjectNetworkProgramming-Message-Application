@@ -14,6 +14,6 @@ using namespace std;
 int main()
 {
 	QueryDatabase test;
-	test.AddUser("hongbeu0309", "leuleuleu", 0);
+	test.LockAccount("ranom");
 	return EXIT_SUCCESS;
 }

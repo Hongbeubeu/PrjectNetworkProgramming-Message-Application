@@ -8,6 +8,7 @@ QueryDatabase::QueryDatabase() {
 QueryDatabase::~QueryDatabase() {
 
 };
+
 /**
  * AddUser is used to add user into database
  * 
@@ -35,6 +36,41 @@ void QueryDatabase::AddUser(const char * username, const char * password, int st
 		prep_stmt->setString(1, username);
 		prep_stmt->setString(2, password);
 		prep_stmt->setInt(3, status);
+		prep_stmt->execute();
+
+		delete prep_stmt;
+		delete con;
+	}
+	catch (SQLException &e) {
+		std::cout << "# ERR: SQLException in " << __FILE__;
+		std::cout << "(" << __FUNCTION__ << ") on line " << __LINE__ << std::endl;
+		std::cout << "# ERR: " << e.what();
+		std::cout << " (MySQL error code: " << e.getErrorCode();
+		std::cout << ", SQLState: " << e.getSQLState() << " )" << std::endl;
+	}
+}
+
+/**
+ * LockAccount is used to lock account
+ * @param username is username of account is being locked
+ * @return no return value
+ */
+void QueryDatabase::LockAccount(const char * username) {
+	try {
+		Driver *driver;
+		Connection *con;
+		PreparedStatement *prep_stmt;
+
+		/* Create a connection */
+		driver = get_driver_instance();
+		con = driver->connect("tcp://127.0.0.1:3307", "root", "123456");
+
+		/* Connect to the MySQL messenger database */
+		con->setSchema("messenger");
+		SQLString username(username, strlen(username));
+		prep_stmt = con->prepareStatement("UPDATE user SET status = 1 WHERE username = ?");
+
+		prep_stmt->setString(1, username);
 		prep_stmt->execute();
 
 		delete prep_stmt;

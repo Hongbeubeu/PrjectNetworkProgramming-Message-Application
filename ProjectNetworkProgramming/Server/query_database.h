@@ -13,6 +13,7 @@ using namespace sql;
 class QueryDatabase {
 public:
 	void AddUser(const char *, const char *,int);
+	void LockAccount(const char *);
 	QueryDatabase();
 	~QueryDatabase();
 
