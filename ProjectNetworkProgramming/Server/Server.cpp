@@ -14,6 +14,8 @@ using namespace std;
 int main()
 {
 	QueryDatabase test;
-	test.LockAccount("ranom");
+	test.CreateGroup("Hong_chat", "hue47");
+	//test.AddUser("john1", "wick");
+	//test.LockAccount("random");
 	return EXIT_SUCCESS;
 }

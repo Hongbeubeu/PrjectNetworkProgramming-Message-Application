@@ -12,9 +12,14 @@ using namespace sql;
  */
 class QueryDatabase {
 public:
-	void AddUser(const char *, const char *,int);
-	void LockAccount(const char *);
+	Driver *driver;
+	Connection *con;
+	PreparedStatement *prep_stmt;
+
 	QueryDatabase();
 	~QueryDatabase();
-
+	void AddUser(const char *, const char *);
+	void LockAccount(const char *);
+	void CreateGroup(const char *, const char *);
+	void InsertUserToGroup(int , int);
 };
