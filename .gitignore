@@ -1,0 +1,11 @@
+/ProjectNetworkProgramming/ipch
+/ProjectNetworkProgramming/*.sln
+/ProjectNetworkProgramming/*.VC.db
+/ProjectNetworkProgramming/*.VC.VC.opendb
+/ProjectNetworkProgramming/Server/*.txt
+/ProjectNetworkProgramming/Server/*.vcxproj
+/ProjectNetworkProgramming/Server/*.filters
+/ProjectNetworkProgramming/Server/stdafx.h
+/ProjectNetworkProgramming/Server/stdafx.cpp
+/ProjectNetworkProgramming/Server/targetver.h
+/ProjectNetworkProgramming/.vs

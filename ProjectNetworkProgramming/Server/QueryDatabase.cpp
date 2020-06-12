@@ -20,7 +20,7 @@ void QueryDatabase::AddUser(const char * username, const char * password, int st
 		driver = get_driver_instance();
 		con = driver->connect("tcp://127.0.0.1:3307", "root", "123456");
 
-		/* Connect to the MySQL test database */
+		/* Connect to the MySQL messenger database */
 		con->setSchema("messenger");
 		SQLString username(username, strlen(username));
 		SQLString password(password, strlen(password));
