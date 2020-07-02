@@ -23,7 +23,7 @@ homeInteractive
         client:
             typeData = 0 ; payLoad[] = NULL; (user in home)
         Server:
-            typeData = 0 ; payLoad[] = 'user1 user2 user3'; (list name of user online)
+            typeData = 0 ; payLoad[] = 'user1 user2 user3'; (list name of user online) // lấy từ map
             typeData = 1 ; payLoad[] = 'group1 group2 group3'; (list of group belong to this user)        
 Sign up:
     typeMess = 1;
@@ -55,10 +55,10 @@ Log out:
 Chat 1 - 1:
     typeMess = 4;
         Client:
-            typeData = 0 ; payLoad[] = username; (username to chat)
-            typeData = 1 ; payLoad[] = mess;
+            typeData = 0 ; payLoad[] = username; (username to chat) // query ra 2 id của người gửi với nhận // kiểm tra xem nt bao h chưa // checkChat11(int , int) // chưa nt bao h thì create groupchat giữa 2 thằng //   lấy id của group chat để thêm vào group user
+            typeData = 1 ; payLoad[] = mess; 
             typeData = 2 ; payLoad[] = NULL; (out of chat)
-            typeData = 3 ; payLoad[] = NULL; (show more mess in history)
+            typeData = 3 ; payLoad[] = NULL; (show more mess in history) // thêm biến đếm xem truy vấn bao nhiêu tin nhắn cũ
         Server:
             typeData = 1 ; payLoad[] = mess;
             typeData = 2 ; payLoad[] = NULL; (your friend out of chat)
@@ -68,7 +68,7 @@ Chat group
         Client:
             typeData = 0 ; payLoad[] = nameOfNewGroup;
             typeData = 1 ; payLoad[] = nameOfUserBeInvited;
-            typeData = 2 ; payLoad[] = '1' (accept of invite) or '0' (not accept of invite);
+            typeData = 2 ; payLoad[] = '1' (accept of invite) or '0' (not accept of invite);?
             typeData = 3 ; payLoad[] = nameOfGroupToChat;
             typeData = 4 ; payLoad[] = mess;
             typeData = 5 ; payLoad[] = NULL; (out of chat)
@@ -80,3 +80,42 @@ Chat group
             typeData = 4 ; payLoad[] = mess;
             typeData = 5 ; payLoad[] = username; (name of user out of chat)
 
+
+
+
+//note typeMess = 5, typeData = 2 client gửi thông điệp chấp nhận vào group thì không biết chấp nhận vào group nào.
+
+bool checkUserOnline(const char *){
+    // check xem trong map session xem username có trong đó chưa?
+}
+
+void getlistUser(char * result){
+    tao lấy ra user name viết cách với nhau 1 dấu cách; // cái này lấy trong map
+}
+
+void getListGroup(char * result){
+    lấy ra 1 list group mà nó tham gia // cái này lấy trong database
+}
+
+void incTryTimes(const char *){
+
+}
+
+void resetTryTimes(const char *){
+
+}
+
+void removeSession(const char *){
+
+}
+
+
+map< int, socket >
+
+list ra 1 danh sách 10 tin nhắn mới nhất trong database
+lấy đc list id mà cùng trong 1 nhóm chat 
+duyệt các id
+1, 2, 4 là những thằng trong 1 nhóm 
+if tồn tại map[2] và map với group chat đó thì gửi còn ko tồn tại thì ko
+duyệt mảng id thì đc map[id] là socket cần gửi
+send[] và lưu lại database

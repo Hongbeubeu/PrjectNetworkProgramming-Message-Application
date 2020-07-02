@@ -22,4 +22,7 @@ public:
 	void LockAccount(const char *);
 	void CreateGroup(const char *, const char *);
 	void InsertUserToGroup(int , int);
+	bool checkAccount(const char *, const char *);
+	bool checkUserName(const char *);
+
 };
