@@ -22,64 +22,58 @@ homeInteractive
     typeMess = 0;
         client:
             typeData = 0 ; payLoad[] = NULL; (user in home)
+            typeData = 1 ; payLoad[] = NUL; (log out)
+            typeData = 2 ; payLoad[] = nameOfNewGroup; (server chả về có tạo thành công hay không)
+            typeData = 3 ; payLoad[] = username; (username to chat) (khi nhận được thông điệp này server chả về 20 mess gần nhận trong khung chat cho người dùng)
+            typeData = 4 ; payLoad[] = nameOfGroupToChat;(khi nhận được thông điệp này server chả về 20 mess gần nhận trong khung chat cho người dùng)
         Server:
-            typeData = 0 ; payLoad[] = 'user1 user2 user3'; (list name of user online) // lấy từ map
-            typeData = 1 ; payLoad[] = 'group1 group2 group3'; (list of group belong to this user)        
-Sign up:
+            typeData = 0 ; payLoad[] = 'user1 user2 user3'; (list name of user online)
+            typeData = 1 ; payLoad[] = 'group1 group2 group3'; (list of group belong to this user)
+            typeData = 4 ; payLoad[] = '0' or '1'; ('0' mean create group success and '1' is opposite)
+       
+Log in:
     typeMess = 1;
         Client:
-            typeData = 0 ; payLoad[] = username;
-            typeData = 1 ; payLoad[] = password;
-        Server:
-            typeData = 0 ; payLoad[] = NULL; (sign up success)
-            typeData = 1 ; payLoad[] = NULL; (sign up fail, this acount existed)
-Log in:
-    typeMess = 2;
-        Client:
-            typeData = 0 ; payLoad[] = username;
-            typeData = 1 ; payLoad[] = password;
+            typeData = 0 ; payLoad[] = NULL;
+            typeData = 1 ; payLoad[] = "username password";
         Server:
             typeData = 0; payLoad[] = NULL; (log in success)
             typeData = 1; payLoad[] = NULL; (Login failed, enter wrong password)
             typeData = 2; payLoad[] = NULL; (Login failed, this acount is blocked)
             typeData = 3; payLoad[] = NULL; (Login failed, the account is logged in elsewhere)
             typeData = 4; payLoad[] = NULL; (Login failed, this acount not exist)
-Log out:
+Sign up:
+    typeMess = 2;
+        Client:
+            typeData = 0 ; payLoad[] = NULL;
+            typeData = 1 ; payLoad[] = "username password";
+        Server:
+            typeData = 0 ; payLoad[] = NULL; (sign up success)
+            typeData = 1 ; payLoad[] = NULL; (sign up fail, this acount existed)
+
+Chat 1 - 1:
     typeMess = 3;
         Client:
-            typeData = 0 ; payLoad[] = username;
+            typeData = 0 ; payLoad[] = mess;
+            typeData = 1 ; payLoad[] = NULL; (out of chat)
+            typeData = 2 ; payLoad[] = NULL; (show more mess in history)
         Server:
-            typeData = 0 ; payLoad[] = NULL; (log out success)
-            typeData = 1 ; payLoad[] = NULL; (log out fail)
-    
-Chat 1 - 1:
-    typeMess = 4;
-        Client:
-            typeData = 0 ; payLoad[] = username; (username to chat) // query ra 2 id của người gửi với nhận // kiểm tra xem nt bao h chưa // checkChat11(int , int) // chưa nt bao h thì create groupchat giữa 2 thằng //   lấy id của group chat để thêm vào group user
-            typeData = 1 ; payLoad[] = mess; 
-            typeData = 2 ; payLoad[] = NULL; (out of chat)
-            typeData = 3 ; payLoad[] = NULL; (show more mess in history) // thêm biến đếm xem truy vấn bao nhiêu tin nhắn cũ
-        Server:
-            typeData = 1 ; payLoad[] = mess;
-            typeData = 2 ; payLoad[] = NULL; (your friend out of chat)
+            typeData = 0 ; payLoad[] = mess;
+            typeData = 1 ; payLoad[] = NULL; (your friend out of chat)
     
 Chat group
-    typeMess = 5:
+    typeMess = 4:
         Client:
-            typeData = 0 ; payLoad[] = nameOfNewGroup;
-            typeData = 1 ; payLoad[] = nameOfUserBeInvited;
-            typeData = 2 ; payLoad[] = '1' (accept of invite) or '0' (not accept of invite);?
-            typeData = 3 ; payLoad[] = nameOfGroupToChat;
+            typeData = 1 ; payLoad[] = 'nameO nameOfUserBeInvited';
+            typeData = 2 ; payLoad[] = '0' (accept of invite) or '1' (not accept of invite);
             typeData = 4 ; payLoad[] = mess;
             typeData = 5 ; payLoad[] = NULL; (out of chat)
             typeData = 5 ; payLoad[] = NULL; (see more mess)
         Server:
-            typeData = 0 ; payLoad[] = '0' or '1'; ('0' mean create group success and '1' is opposite)
             typeData = 1 ; payLoad[] = 'username nameOfGroupToJoin' ; (first contain name of peple sent invite and second is name of group to join)
             typeData = 2 ; payLoad[] = username ; (name of user agree join group)
             typeData = 4 ; payLoad[] = mess;
             typeData = 5 ; payLoad[] = username; (name of user out of chat)
-
 
 
 

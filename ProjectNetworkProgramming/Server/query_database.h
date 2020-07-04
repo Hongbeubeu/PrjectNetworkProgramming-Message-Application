@@ -12,17 +12,16 @@ using namespace sql;
  */
 class QueryDatabase {
 public:
-	Driver *driver;
-	Connection *con;
-	PreparedStatement *prep_stmt;
-
 	QueryDatabase();
 	~QueryDatabase();
 	void AddUser(const char *, const char *);
+	int getUserIdByUserName(const char *);
 	void LockAccount(const char *);
 	void CreateGroup(const char *, const char *);
 	void InsertUserToGroup(int , int);
-	bool checkAccount(const char *, const char *);
 	bool checkUserName(const char *);
+	bool checkPassword(const char *, const char *);
+	bool checkChat11(int, int);
+	bool checkGroupName(const char*);
 
 };
