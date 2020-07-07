@@ -1,0 +1,5 @@
+bool checkStatus(const char *);
+void getListUserOnline(char *);
+void getListGroupOfUser(char *);
+int getIdGroup11(const char *, const char *);
+int getIdGroup1n(const char *);
