@@ -1,19 +1,10 @@
-﻿// server.cpp : Defines the entry point for the console application.
+﻿// BTL.cpp : Defines the entry point for the console application.
 //
-#include "stdafx.h"
-#include "Business.h"
 
-#include <iostream>
-#include <string>
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-#include <conio.h>
-#include <winsock2.h>
-#include <WS2tcpip.h>
-#include <fstream>
-#include <cstring>
-#include <process.h>
+#define WIN32_LEAN_AND_MEAN
+#define _WINSOCK_DEPRECATED_NO_WARNINGS
+#include "DataIO.h"
+#include "Business.h"
 
 #define SERVER_ADDR "10.0.0.1"
 #define BUFF_SIZE 2048
@@ -26,6 +17,8 @@
 
 using namespace std;
 
+int numberOfThread = 0;
+
 typedef struct {
 	int typeMess;
 	int typeData;
@@ -34,43 +27,42 @@ typedef struct {
 
 // The thread handle connect from client
 #define MESS_SIZE sizeof(MESS)
-void recvData(SOCKET client, char* buff, int dataLength);
 
-bool bussiness(SOCKET client) {
+bool bussiness(SOCKET client, int &coutLock, int &coutMess11, int &coutMess1n) {
 	MESS mess;
 	char buffMess[MESS_SIZE];
 	recvData(client, buffMess, MESS_SIZE);
 	memcpy(&mess, buffMess, MESS_SIZE);
-	if (mess.typeMess == 5 && mess.typeData == 0)\
+	if (mess.typeMess == 5 && mess.typeData == 0) {
+		if (mapSocktoId.count(client) > 0) {
+			map<int, SOCKET>::iterator it1;
+			int id = mapSocktoId[client];
+			it1 = mapIdtoSock.find(id);
+			mapIdtoSock.erase(it1);
+			map<SOCKET, int>::iterator it2;
+			it2 = mapSocktoId.find(client);
+			mapSocktoId.erase(it2);
+		}
 		return false;
-	switch (mess.typeMess) {
-		case 0: {
-			handleMessHomeInterface(, mess);
-			break;
-		}
-		case 1: {
-			handleMessSignup();
-			break;
-		}
-		case 2: {
-			handleMessLogin();
-			break;
-		}
-		case 3: {
-			handleMessLogout();
-			break;
-		}
-		case 4: {
-			handleChatuser();
-			break;
-		}
-
-		case 5: {
-			handleChatGroup();
-			break;
-		}
 	}
-	return true
+	switch (mess.typeMess) {
+	case 0:
+		handleMessHomeInterface(client, &mess);
+		break;
+	case 1:
+		handleMessLogin(client, &mess, coutLock);
+		break;
+	case 2:
+		handleMessSignup(client, &mess);
+		break;
+	case 3:
+		handleChatuser(client, &mess, coutMess11);
+		break;
+	case 4:
+		handleChatGroup(client, &mess, coutMess1n);
+		break;
+	}
+	return true;
 }
 
 
@@ -165,8 +157,10 @@ unsigned __stdcall selecetThread(void *param) {
 				printf("FD_READ failed with error %d\n", sockEvent.iErrorCode[FD_READ_BIT]);
 				break;
 			}
-
-			ret = bussiness(socks[index]);
+			int coutLock = 0;
+			int coutMess11 = 1;
+			int coutMess1n = 1;
+			ret = bussiness(socks[index], coutLock, coutMess11, coutMess1n);
 			if (ret == false) {
 				closesocket(socks[index]);
 				socks[index] = 0;
@@ -182,6 +176,15 @@ unsigned __stdcall selecetThread(void *param) {
 			if (sockEvent.iErrorCode[FD_CLOSE_BIT] != 0) {
 				printf("FD_READ failed with error %d\n", sockEvent.iErrorCode[FD_CLOSE_BIT]);
 				break;
+			}
+			if (mapSocktoId.count(socks[index]) > 0) {
+				map<int, SOCKET>::iterator it1;
+				int id = mapSocktoId[socks[index]];
+				it1 = mapIdtoSock.find(id);
+				mapIdtoSock.erase(it1);
+				map<SOCKET, int>::iterator it2;
+				it2 = mapSocktoId.find(socks[index]);
+				mapSocktoId.erase(it2);
 			}
 			closesocket(socks[index]);
 			socks[index] = 0;
@@ -214,8 +217,9 @@ int main(int argc, char* argv[])
 	serverAddr.sin_family = AF_INET;
 	serverAddr.sin_port = htons(serverPort);
 	serverAddr.sin_addr.s_addr = inet_addr(SERVER_ADDR);
-
-	if (bind(listenSock, (sockaddr *)&serverAddr, sizeof(serverAddr)))
+	int iResult = 0;
+	iResult = bind(listenSock, (sockaddr *)&serverAddr, sizeof(serverAddr));
+	if(iResult != NO_ERROR)
 	{
 		printf("Error! Cannot bind this address.");
 		_getch();
@@ -252,57 +256,56 @@ int main(int argc, char* argv[])
 
 
 
-// void craftMessage(LPMESS mess, char* buffMess, int typeMess, int typeData, char* buff){
-//     mess->typeMess = typeMess;
-//     mess->typeData = typeData;
-//     if(buff == NULL)
-//         mess->payLoad[0] = 0;
-//     else{
-//         memcpy(mess->payLoad, buff, strlen(buff));
-//         mess->payLoad[strlen(buff)] = 0;
-//     }
-//     memcpy(buffMess, mess, MESS_SIZE);
-//     return;
-// }
+void craftMessage(LPMESS mess, char* buffMess, int typeMess, int typeData, char* buff) {
+	mess->typeMess = typeMess;
+	mess->typeData = typeData;
+	if (buff == NULL)
+		mess->payLoad[0] = 0;
+	else {
+		memcpy(mess->payLoad, buff, strlen(buff));
+		mess->payLoad[strlen(buff)] = 0;
+	}
+	memcpy(buffMess, mess, MESS_SIZE);
+	return;
+}
 
-// // fuction wrap of send() 
-// void sendData(SOCKET client, char* buff, int dataLength) {
+//fuction wrap of send()
+void sendData(SOCKET client, char* buff, int dataLength) {
 
-// 	int index = 0, nLeft = dataLength, ret;
+	int index = 0, nLeft = dataLength, ret;
 
-// 	while (nLeft > 0) {
-// 		ret = send(client, &(buff[index]), nLeft, 0);
-// 		if (ret == SOCKET_ERROR) {
-// 			cout << "\n\tError: " << WSAGetLastError() << "when sen data to server" << endl;
-// 			break;
-// 		}
+	while (nLeft > 0) {
+		ret = send(client, &(buff[index]), nLeft, 0);
+		if (ret == SOCKET_ERROR) {
+			cout << "\n\tError: " << WSAGetLastError() << "when sen data to server" << endl;
+			break;
+		}
 
-// 		index += ret;
-// 		nLeft -= ret;
-// 	}
-// 	return;
-// }
+		index += ret;
+		nLeft -= ret;
+	}
+	return;
+}
 
- // fuction wrap of recv() 
- void recvData(SOCKET client, char* buff, int dataLength) {
+//fuction wrap of recv()
+void recvData(SOCKET client, char* buff, int dataLength) {
 
- 	int index = 0, nLeft = dataLength, ret;
+	int index = 0, nLeft = dataLength, ret;
 
- 	while (nLeft > 0) {
- 		ret = recv(client, &(buff[index]), nLeft, 0);
- 		if (ret == SOCKET_ERROR) {
- 			cout << "\n\tError: " << WSAGetLastError() << "when sen data to server" << endl;
- 			break;
- 		}
+	while (nLeft > 0) {
+		ret = recv(client, &(buff[index]), nLeft, 0);
+		if (ret == SOCKET_ERROR) {
+			cout << "\n\tError: " << WSAGetLastError() << "when sen data to server" << endl;
+			break;
+		}
 
- 		index += ret;
- 		nLeft -= ret;
+		index += ret;
+		nLeft -= ret;
 
- 		buff[dataLength] = 0;
+		buff[dataLength] = 0;
 
- 	}
- 	return;
- }
-
+	}
+	return;
+}
 
 

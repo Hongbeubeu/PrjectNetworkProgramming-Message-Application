@@ -13,6 +13,10 @@
 #include <queue> 
 #include "QueryDatabase.h"
 
+map<SOCKET, int> mapSocktoId; // map socket->id
+map<int, SOCKET> mapIdtoSock; // map id
+map<int, int> mapIdUsertoIdGroup; //map idUser->idGroup
+
 typedef struct {
 
 	int typeMess;
@@ -40,22 +44,8 @@ typedef struct {
 	SOCKET socket;
 } PER_HANDLE_DATA, *LPPER_HANDLE_DATA;
 
-/*Khai bao Map,...*/
+// funciton no SQL
 
-
-
-void wait() {
-	while (semaphore == true) {}
-	semaphore = true;
-}
-
-void signal() {
-	semaphore = false;
-}
-
-bool checkUserOnline(const char *) {
-	// check xem trong map session 
-}
 
 void craffMessage(LPMESS mess, char* buffMess, int typeMess, int typeData, char* buff) {
 	mess->typeMess = typeMess;
@@ -64,11 +54,26 @@ void craffMessage(LPMESS mess, char* buffMess, int typeMess, int typeData, char*
 	memcpy(buffMess, mess, MESS_SIZE);
 	return;
 }
-void sendCLient(LPPER_IO_OPERATION_DATA &pointIoData, LPMESS mess, int typeMess, int typeData, char* buff) {
+//fuction wrap of send()
+void sendData(SOCKET client, char* buff, int dataLength) {
+
+	int index = 0, nLeft = dataLength, ret;
+
+	while (nLeft > 0) {
+		ret = send(client, &(buff[index]), nLeft, 0);
+		if (ret == SOCKET_ERROR) {
+			cout << "\n\tError: " << WSAGetLastError() << "when sen data to server" << endl;
+			break;
+		}
+
+		index += ret;
+		nLeft -= ret;
+	}
+	return;
+}
+void sendCLient(SOCKET socket, LPMESS mess, int typeMess, int typeData, char* buff) {
 	char buffMess[1000];
 	craffMessage(mess, buffMess, 2, 4, buff);
-	pointIoData->dataBuff.len = MESS_SIZE;
-	strcpy(pointIoData->dataBuff.buf, buffMess);
-	WSASend(pointIoData->socket, &(pointIoData->dataBuff), 1, NULL, 0, &(pointIoData->overlapped), NULL); // Send
+	sendData(socket, buffMess, MESS_SIZE); //send
 }
 

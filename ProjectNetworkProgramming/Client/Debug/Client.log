@@ -1,0 +1,12 @@
+﻿  stdafx.cpp
+  Client.cpp
+e:\laptrinhmang\projectnetworkprogramming\projectnetworkprogramming\client\client.cpp(575): warning C4800: 'int': forcing value to bool 'true' or 'false' (performance warning)
+e:\laptrinhmang\projectnetworkprogramming\projectnetworkprogramming\client\client.cpp(580): warning C4800: 'int': forcing value to bool 'true' or 'false' (performance warning)
+e:\laptrinhmang\projectnetworkprogramming\projectnetworkprogramming\client\client.cpp(837): warning C4101: 'numOfUserOnl': unreferenced local variable
+e:\laptrinhmang\projectnetworkprogramming\projectnetworkprogramming\client\client.cpp(837): warning C4101: 'numOfGroup': unreferenced local variable
+e:\laptrinhmang\projectnetworkprogramming\projectnetworkprogramming\client\client.cpp(836): warning C4101: 'buff': unreferenced local variable
+e:\laptrinhmang\projectnetworkprogramming\projectnetworkprogramming\client\client.cpp(837): warning C4101: 'signResult': unreferenced local variable
+e:\laptrinhmang\projectnetworkprogramming\projectnetworkprogramming\client\client.cpp(877): warning C4101: 'ret': unreferenced local variable
+e:\laptrinhmang\projectnetworkprogramming\projectnetworkprogramming\client\client.cpp(920): warning C4101: 'ret': unreferenced local variable
+  Client.vcxproj -> E:\LapTrinhMang\ProjectNetworkProgramming\ProjectNetworkProgramming\Debug\Client.exe
+  Client.vcxproj -> E:\LapTrinhMang\ProjectNetworkProgramming\ProjectNetworkProgramming\Debug\Client.pdb (Full PDB)
